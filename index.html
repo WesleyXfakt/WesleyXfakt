@@ -1,33 +1,69 @@
-<!-- Use an image of the business card as the marker -->
-<img id="marker" src="path/to/business_card.jpg" />
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR Business Card</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@argonjs/argon@4.4.0/dist/argon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ar.js@2.2.0"></script>
+    <style>
+      /* Define CSS styles for overlay content */
+      #overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        font-family: sans-serif;
+        font-size: 16px;
+        text-align: center;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Define the marker image -->
+    <img id="marker" src="path/to/business_card.jpg" style="display: none;">
 
-<!-- Include AR.js library and dependencies -->
-<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@argonjs/argon@4.4.0/dist/argon.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ar.js@2.2.0"></script>
+    <!-- Define the digital content to overlay on top of the marker -->
+    <div id="overlay-content">
+      <h1>Business Card</h1>
+      <p>Here is some additional information about the business.</p>
+    </div>
 
-<!-- Set up AR.js scene -->
-<a-scene embedded arjs="trackingMethod: 'best', sourceType: 'webcam'">
-    <a-marker preset="custom" type="pattern" url="path/to/marker.patt">
-      <a-entity geometry="primitive: box; depth: 0.1; height: 0.2; width: 0.2" material="color: red;"></a-entity>
-    </a-marker>
-    <a-entity camera></a-entity>
-  </a-scene>
+    <!-- Set up AR.js scene to track the marker and overlay content -->
+    <a-scene embedded arjs="trackingMethod: 'best', sourceType: 'webcam'">
+      <a-marker preset="custom" type="pattern" url="path/to/marker.patt">
+        <!-- Add any 3D objects or content you want to display -->
+        <a-entity geometry="primitive: box; depth: 0.1; height: 0.2; width: 0.2" material="color: red;"></a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
 
-<!-- Define the digital content you want to overlay -->
-<div id="overlay-content">
-  <h1>Business Card</h1>
-  <p>Here is some additional information about the business.</p>
-</div>
+    <script>
+      // Use AR.js to detect when the marker is visible and overlay content
+      var marker = document.querySelector('#marker');
+      var overlayContent = document.querySelector('#overlay-content');
 
-// Use AR.js to detect when the marker is visible and overlay content
-var marker = document.querySelector('#marker');
-var overlayContent = document.querySelector('#overlay-content');
+      marker.addEventListener('load', function() {
+        // Once the marker image has loaded, show it and start the AR scene
+        marker.style.display = 'block';
+        var scene = document.querySelector('a-scene');
+        scene.style.opacity = 1;
+      });
 
-marker.addEventListener('markerFound', function() {
-  overlayContent.style.display = 'block';
-});
+      marker.addEventListener('markerFound', function() {
+        // When the marker is found, show the overlay content
+        overlayContent.style.display = 'block';
+      });
 
-marker.addEventListener('markerLost', function() {
-  overlayContent.style.display = 'none';
-});
+      marker.addEventListener('markerLost', function() {
+        // When the marker is lost, hide the overlay content
+        overlayContent.style.display = 'none';
+      });
+    </script>
+  </body>
+</html>
