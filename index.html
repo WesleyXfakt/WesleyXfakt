@@ -1,94 +1,34 @@
-<!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | AR Test</title>
-    <meta name="description" content="">
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container">
-      <div id="unity-canvas-container">
-        <canvas id="unity-canvas" style="width: 100%; height: 100%;"></canvas>
-      </div>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <button id="entervr" value="Enter VR" disabled>VR</button>
-        <button id="enterar" value="Enter AR" disabled>AR</button>
-        <div id="unity-webxr-link">Using <a href="https://github.com/De-Panther/unity-webxr-export" target="_blank" title="WebXR Export">WebXR Export</a></div>
-        <div id="unity-build-title">AR Test</div>
-      </div>
-    </div>
-    <script>
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/WesleyXfakt.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/WesleyXfakt.data",
-        frameworkUrl: buildUrl + "/WesleyXfakt.framework.js",
-        codeUrl: buildUrl + "/WesleyXfakt.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "AR Test",
-        productVersion: "1.0",
-      };
+<!-- Use an image of the business card as the marker -->
+<img id="marker" src="path/to/business_card.jpg" />
 
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var canvasContainer = document.querySelector("#unity-canvas-container");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-      var unityInstance = null;
-      
+<!-- Include AR.js library and dependencies -->
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@argonjs/argon@4.4.0/dist/argon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ar.js@2.2.0"></script>
 
-      canvasContainer.style.width = "960px";
-      canvasContainer.style.height = "600px";
-      loadingBar.style.display = "block";
+<!-- Set up AR.js scene -->
+<a-scene embedded arjs="debugUIEnabled: false;">
+  <a-marker preset="custom" type="pattern" url="path/to/marker.patt">
+    <!-- Add any 3D objects or content you want to display -->
+    <a-entity geometry="primitive: box; depth: 0.1; height: 0.2; width: 0.2" material="color: red;"></a-entity>
+  </a-marker>
+  <a-entity camera></a-entity>
+</a-scene>
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((instance) => {
-          unityInstance = instance;
-          loadingBar.style.display = "none";
-          if (fullscreenButton)
-          {
-            fullscreenButton.onclick = () => {
-              unityInstance.SetFullscreen(1);
-            };
-          }
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
+<!-- Define the digital content you want to overlay -->
+<div id="overlay-content">
+  <h1>Business Card</h1>
+  <p>Here is some additional information about the business.</p>
+</div>
 
-      let enterARButton = document.getElementById('enterar');
-      let enterVRButton = document.getElementById('entervr');
+// Use AR.js to detect when the marker is visible and overlay content
+var marker = document.querySelector('#marker');
+var overlayContent = document.querySelector('#overlay-content');
 
-      document.addEventListener('onARSupportedCheck', function (event) {
-        enterARButton.disabled = !event.detail.supported;
-      }, false);
-      document.addEventListener('onVRSupportedCheck', function (event) {
-        enterVRButton.disabled = !event.detail.supported;
-      }, false);
+marker.addEventListener('markerFound', function() {
+  overlayContent.style.display = 'block';
+});
 
-      enterARButton.addEventListener('click', function (event) {
-        unityInstance.Module.WebXR.toggleAR();
-      }, false);
-      enterVRButton.addEventListener('click', function (event) {
-        unityInstance.Module.WebXR.toggleVR();
-      }, false);
-    </script>
-  </body>
-</html>
+marker.addEventListener('markerLost', function() {
+  overlayContent.style.display = 'none';
+});
