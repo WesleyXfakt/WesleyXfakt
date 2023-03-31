@@ -1,76 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>AR Business Card</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@argonjs/argon@4.4.0/dist/argon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ar.js@2.2.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@argonjs/argon@1.4.0/dist/argon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ar.js@2.2.2/aframe/build/aframe-ar.min.js"></script>
-    <style>
-      /* Define CSS styles for overlay content */
-      #overlay-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        font-family: sans-serif;
-        font-size: 16px;
-        text-align: center;
-        display: none;
-      }
-      
-      #marker {
-  width: 100px;
-  height: 100px;
-}
-    </style>
-  </head>
-  <body>
-    <!-- Define the marker image -->
-    <img id="marker" src="card.jpg" style="display: none;">
+    <head>
+        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
+    </head>
 
-    <!-- Define the digital content to overlay on top of the marker -->
-    <div id="overlay-content">
-      <h1>Business Card</h1>
-      <p>Here is some additional information about the business.</p>
-    </div>
+    <body style="margin: 0; overflow: hidden;">
+        <a-scene
+            vr-mode-ui="enabled: false;"
+            loading-screen="enabled: false;"
+            arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+            id="scene"
+            embedded
+            gesture-detector
+        >
+            <a-marker
+                id="animated-marker"
+                type="pattern"
+                preset="custom"
+                url="assets/marker.patt"
+                raycaster="objects: .clickable"
+                emitevents="true"
+                cursor="fuse: false; rayOrigin: mouse;"
+                id="markerA"
+            >
+                <a-image
+                    src="assets/asset.jpeg"
+                    scale="1 1 1"
+                    class="clickable"
+                    rotation="-90 0 0"
+                    gesture-handler
+                ></a-image>
+            </a-marker>
 
-    <!-- Set up AR.js scene to track the marker and overlay content -->
-    <a-scene embedded arjs="trackingMethod: 'best', sourceType: 'webcam'">
-      <a-marker preset="custom" type="pattern" url="card.patt">
-        <!-- Add any 3D objects or content you want to display -->
-        <a-entity geometry="primitive: box; depth: 0.1; height: 0.2; width: 0.2" material="color: red;"></a-entity>
-      </a-marker>
-      <a-entity camera></a-entity>
-    </a-scene>
-
-    <script>
-      // Use AR.js to detect when the marker is visible and overlay content
-      var marker = document.querySelector('#marker');
-      var overlayContent = document.querySelector('#overlay-content');
-
-      marker.addEventListener('load', function() {
-        // Once the marker image has loaded, show it and start the AR scene
-        marker.style.display = 'block';
-        var scene = document.querySelector('a-scene');
-        scene.style.opacity = 1;
-      });
-
-      marker.addEventListener('markerFound', function() {
-        // When the marker is found, show the overlay content
-        overlayContent.style.display = 'block';
-      });
-
-      marker.addEventListener('markerLost', function() {
-        // When the marker is lost, hide the overlay content
-        overlayContent.style.display = 'none';
-      });
-    </script>
-  </body>
+            <a-entity camera></a-entity>
+        </a-scene>
+    </body>
 </html>
