@@ -11,7 +11,7 @@
   "dependencies": {
 	  "@needle-tools/engine": "^3.34.0-alpha.2",
 	  "three": "npm:@needle-tools/three@^0.162.1",
-	  "@needle-tools/samples-scripts": "file:./../../../wkspaces/AR Card/AR Card/Library/PackageCache/com.needle.engine-samples@0.14.0/Runtime/_Shared/SampleScripts~"
+	  "@needle-tools/samples-scripts": "file:./../../../../wkspaces/AR Card/AR Card/Library/PackageCache/com.needle.engine-samples@0.14.0/Runtime/_Shared/SampleScripts~"
 	},
   "devDependencies": {
 	  "@needle-tools/helper": "^1.7.0-beta.2",
