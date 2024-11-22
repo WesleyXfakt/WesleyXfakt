@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="scoreboard">
+        <h1>Scoreboard</h1>
+        <p>Team A: <span id="teamA-score">0</span></p>
+        <p>Team B: <span id="teamB-score">0</span></p>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+<script>
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('roomId') || 'default';
+
+    // Apply room-specific styles
+    applyRoomStyles(roomId);
+
+    // Join the room
+    socket.emit('joinRoom', roomId);
+
+    // Update scores when received from the server
+    socket.on('updateScores', (scores) => {
+    const teamAScoreElement = document.getElementById('teamA-score');
+    const teamBScoreElement = document.getElementById('teamB-score');
+
+    const currentTeamAScore = parseInt(teamAScoreElement.innerText, 10);
+    const currentTeamBScore = parseInt(teamBScoreElement.innerText, 10);
+
+    const socketScoreTeamA = parseInt(scores.teamA, 10);
+    const socketScoreTeamB = parseInt(scores.teamB, 10);
+
+    console.log(currentTeamAScore, socketScoreTeamA);
+    console.log(currentTeamBScore, socketScoreTeamB);
+
+    // animateScore(teamAScoreElement, scores.teamA);
+    // animateScore(teamBScoreElement, scores.teamB);
+
+    if (currentTeamAScore !== scores.teamA) {
+        console.log("Updating Team A score...");
+        animateScore(teamAScoreElement, scores.teamA);
+    }
+    if (currentTeamBScore !== scores.teamB) {
+        console.log("Updating Team B score...");
+        animateScore(teamBScoreElement, scores.teamB);
+    }
+});
+
+function animateScore(element, newScore) {
+    console.log(`Animating score for element:`, element);
+    element.classList.add('score-update'); // Add animation class
+    element.innerText = newScore; // Update the score text
+
+    // Remove animation class after animation ends
+    setTimeout(() => {
+        element.classList.remove('score-update');
+    }, 300); // Match the animation duration in CSS (0.3s)
+}
+</script>
+</body>
+</html>
